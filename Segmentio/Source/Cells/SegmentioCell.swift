@@ -164,7 +164,7 @@ class SegmentioCell: UICollectionViewCell {
             )
         } else {
             badgePresenter.addBadgeForContainerView(
-                containerView!,
+                segmentTitleLabel!,
                 counterValue: badgeCount,
                 backgroundColor: color,
                 badgeSize: .standard

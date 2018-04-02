@@ -50,7 +50,7 @@ class BadgeViewPresenter {
                 toItem: badgeView.superview,
                 attribute: .top,
                 multiplier: 1,
-                constant: 6.0
+                constant: badgeView.superview is UILabel ? 0 : 6.0
         )
         
         let segmentTitleLabelVerticalCenterConstraint =
@@ -61,7 +61,7 @@ class BadgeViewPresenter {
                 toItem: badgeView.superview,
                 attribute: .trailing,
                 multiplier: 1,
-                constant: constraintConstant
+                constant: badgeView.superview is UILabel ? 0 : constraintConstant
         )
         segmentTitleLabelHorizontalCenterConstraint.isActive = true
         segmentTitleLabelVerticalCenterConstraint.isActive = true

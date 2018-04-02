@@ -29,12 +29,12 @@ struct SegmentioBuilder {
     
     private static func segmentioContent() -> [SegmentioItem] {
         return [
-            SegmentioItem(title: "Tornado", image: UIImage(named: "tornado")),
-            SegmentioItem(title: "Earthquakes", image: UIImage(named: "earthquakes")),
-            SegmentioItem(title: "Extreme heat", image: UIImage(named: "heat")),
-            SegmentioItem(title: "Eruption", image: UIImage(named: "eruption")),
-            SegmentioItem(title: "Floods", image: UIImage(named: "floods")),
-            SegmentioItem(title: "Wildfires", image: UIImage(named: "wildfires"))
+            SegmentioItem(title: "DEV", image: UIImage(named: "tornado")),
+            SegmentioItem(title: "TEST", image: UIImage(named: "earthquakes")),
+            SegmentioItem(title: "UAT", image: UIImage(named: "heat")),
+            SegmentioItem(title: "LOAD1", image: UIImage(named: "eruption")),
+            SegmentioItem(title: "LOAD2", image: UIImage(named: "floods"))
+            //SegmentioItem(title: "Wildfires", image: UIImage(named: "wildfires"))
         ]
     }
     
@@ -47,18 +47,47 @@ struct SegmentioBuilder {
             break
         }
         
+        let indicatorOptions = SegmentioIndicatorOptions(
+            type: .bottom,
+            ratio: 1,
+            height: 5,
+            color: .orange
+        )
+        
+        let horizontalSeparatorOptions = SegmentioHorizontalSeparatorOptions(
+            type: .none,
+            height: 0,
+            color: .clear
+        )
+        
+        let states = SegmentioStates(
+            defaultState: SegmentioState(
+                backgroundColor: .clear,
+                titleFont: UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
+                titleTextColor: .white
+            ),
+            selectedState: SegmentioState(
+                backgroundColor: .clear,
+                titleFont:  UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
+                titleTextColor: .white
+            ),
+            highlightedState: SegmentioState(
+                backgroundColor: .clear,
+                titleFont:  UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
+                titleTextColor: .white
+            )
+        )
+        
         return SegmentioOptions(
-            backgroundColor: ColorPalette.white,
-            segmentPosition: segmentioPosition,
+            backgroundColor: .black,
+            segmentPosition: .dynamic,//fixed(maxVisibleItems: 5),
             scrollEnabled: true,
-            indicatorOptions: segmentioIndicatorOptions(),
-            horizontalSeparatorOptions: segmentioHorizontalSeparatorOptions(),
-            verticalSeparatorOptions: segmentioVerticalSeparatorOptions(),
-            imageContentMode: imageContentMode,
+            indicatorOptions: indicatorOptions,
+            horizontalSeparatorOptions: horizontalSeparatorOptions,
+            verticalSeparatorOptions: nil,
+            imageContentMode: .center,
             labelTextAlignment: .center,
-            labelTextNumberOfLines: 1,
-            segmentStates: segmentioStates(),
-            animationDuration: 0.3
+            segmentStates: states
         )
     }
     

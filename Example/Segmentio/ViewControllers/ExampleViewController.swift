@@ -52,7 +52,13 @@ class ExampleViewController: UIViewController {
             segmentioView: segmentioView,
             segmentioStyle: segmentioStyle
         )
+        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 0)
         SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 1)
+        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 2)
+        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 3)
+        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 4)
+        
+
         
         segmentioView.selectedSegmentioIndex = selectedSegmentioIndex()
         
