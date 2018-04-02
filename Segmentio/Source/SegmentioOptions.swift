@@ -17,6 +17,7 @@ public struct SegmentioItem {
     public var selectedImage: UIImage?
     public var badgeCount: Int?
     public var badgeColor: UIColor?
+    public var badgeColors: [UIColor]?
     public var intrinsicWidth: CGFloat {
         let label = UILabel()
         label.text = self.title
@@ -35,9 +36,15 @@ public struct SegmentioItem {
         self.badgeColor = color
     }
     
+    public mutating func addBadge(_ count: Int, gradientColors: [UIColor]) {
+        self.badgeCount = count
+        self.badgeColors = gradientColors
+    }
+    
     public mutating func removeBadge() {
         self.badgeCount = nil
         self.badgeColor = nil
+        self.badgeColors = nil
     }
     
 }
@@ -131,6 +138,7 @@ public struct SegmentioIndicatorOptions {
 
 public enum SegmentioPosition {
     case dynamic
+    case fixedByLargest
     case fixed(maxVisibleItems: Int)
 }
 

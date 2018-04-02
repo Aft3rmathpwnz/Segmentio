@@ -29,6 +29,25 @@ class BadgeViewPresenter {
         }
     }
     
+    func addBadgeForContainerView(_ containerView: UIView, counterValue: Int, backgroundColors: [UIColor],
+                                  badgeSize: BadgeSize = .standard) {
+        var badgeView: BadgeWithCounterView!
+        for view in containerView.subviews {
+            if view is BadgeWithCounterView {
+                badgeView = view as! BadgeWithCounterView
+                badgeView?.setBadgeBackgroundColors(backgroundColors)
+                badgeView?.setBadgeCounterValue(counterValue)
+            }
+        }
+        if badgeView == nil {
+            badgeView = badgeViewForCounterValue(counterValue, backgroundColors: backgroundColors, size: badgeSize)
+            badgeView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(badgeView)
+            containerView.bringSubview(toFront: badgeView)
+            setupBadgeConstraints(badgeView, counterValue: counterValue)
+        }
+    }
+    
     func removeBadgeFromContainerView(_ containerView: UIView) {
         for view in containerView.subviews {
             if view is BadgeWithCounterView {
@@ -61,7 +80,7 @@ class BadgeViewPresenter {
                 toItem: badgeView.superview,
                 attribute: .trailing,
                 multiplier: 1,
-                constant: badgeView.superview is UILabel ? 0 : constraintConstant
+                constant: badgeView.superview is UILabel ? badgeView.frame.size.height / 3.0 : constraintConstant
         )
         segmentTitleLabelHorizontalCenterConstraint.isActive = true
         segmentTitleLabelVerticalCenterConstraint.isActive = true
@@ -88,7 +107,13 @@ extension BadgeViewPresenter {
         view.setBadgeBackgroundColor(backgroundColor)
         view.setBadgeCounterValue(counter)
         return view
-        
+    }
+    
+    fileprivate func badgeViewForCounterValue(_ counter: Int, backgroundColors: [UIColor], size: BadgeSize) -> BadgeWithCounterView {
+        let view = BadgeWithCounterView.instanceFromNib(size: size)
+        view.setBadgeBackgroundColors(backgroundColors)
+        view.setBadgeCounterValue(counter)
+        return view
     }
     
 }

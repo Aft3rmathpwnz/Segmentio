@@ -41,6 +41,18 @@ class BadgeWithCounterView: UIView {
     
     func setBadgeBackgroundColor(_ color: UIColor) {
         backgroundImageView.backgroundColor = color
+        if let gradientLayer = backgroundImageView.layer.sublayers?[0] as? CAGradientLayer {
+            gradientLayer.removeFromSuperlayer()
+        }
+    }
+    
+    func setBadgeBackgroundColors(_ gradientColors: [UIColor]) {
+        let gradient = CAGradientLayer()
+        gradient.frame = backgroundImageView.bounds
+        gradient.colors = gradientColors
+        gradient.startPoint = CGPoint(x: 0.0, y: 1.0)
+        gradient.endPoint = CGPoint(x: 1.0, y: 0.0)
+        backgroundImageView.layer.insertSublayer(gradient, at: 0)
     }
     
     fileprivate class func nibNameForSize(_ size: BadgeSize) -> String {

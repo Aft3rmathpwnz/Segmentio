@@ -24,7 +24,7 @@ class SideMenuViewController: UIViewController {
     @IBOutlet fileprivate weak var menuTableViewWidthConstraint: NSLayoutConstraint!
     
     fileprivate var menuItems = SegmentioStyle.allStyles
-    fileprivate var currentStyle = SegmentioStyle.onlyImage
+    fileprivate var currentStyle = SegmentioStyle.onlyLabel
     
     // MARK: - Lifecycle
     

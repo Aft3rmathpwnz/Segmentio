@@ -191,6 +191,11 @@ open class Segmentio: UIView {
         segmentioCollectionView?.reloadData()
     }
     
+    open func addBadge(at index: Int, count: Int, gradientColors: [UIColor]) {
+        segmentioItems[index].addBadge(count, gradientColors: gradientColors)
+        segmentioCollectionView?.reloadData()
+    }
+        
     open func removeBadge(at index: Int) {
         segmentioItems[index].removeBadge()
         segmentioCollectionView?.reloadData()
@@ -488,9 +493,9 @@ open class Segmentio: UIView {
             var x: CGFloat = 0
             
             switch segmentioOptions.segmentPosition {
-            case .fixed:
+            case .fixed, .fixedByLargest:
                 x = floor(CGFloat(selectedSegmentioIndex) * cellWidth - collectionView.contentOffset.x)
-                
+          
             case .dynamic:
                 for i in 0..<selectedSegmentioIndex {
                     x += segmentWidth(for: IndexPath(item: i, section: 0))
@@ -532,6 +537,20 @@ open class Segmentio: UIView {
         case .fixed(let maxVisibleItems):
             let maxItems = maxVisibleItems > segmentioItems.count ? segmentioItems.count : maxVisibleItems
             width = maxItems == 0 ? 0 : floor(collectionViewWidth / CGFloat(maxItems))
+            
+        case .fixedByLargest:
+            var biggestWidth: CGFloat = 0
+            var dynamicWidth: CGFloat = 0
+            for item in segmentioItems {
+                let width = Segmentio.intrinsicWidth(for: item, style: segmentioStyle)
+                if width > biggestWidth {
+                    biggestWidth = width
+                }
+                dynamicWidth += biggestWidth
+            }
+            biggestWidth = dynamicWidth > collectionViewWidth ? biggestWidth
+                : biggestWidth + ((collectionViewWidth - dynamicWidth) / CGFloat(segmentioItems.count))
+            return biggestWidth
             
         case .dynamic:
             guard !segmentioItems.isEmpty else {
@@ -704,7 +723,7 @@ extension Segmentio.Points {
         var endX = item.endX
 
         switch position {
-        case .fixed(_):
+        case .fixed(_), .fixedByLargest:
             if context.isFirstCell == false && context.isLastCell == false {
                 if context.isLastOrPrelastVisibleCell == true {
                     let updatedStartX = item.collectionViewWidth - (cellWidth * 2)
