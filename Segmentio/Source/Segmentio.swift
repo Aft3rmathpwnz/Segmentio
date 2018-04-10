@@ -43,7 +43,7 @@ open class Segmentio: UIView {
             }
         }
     }
-
+    
     open fileprivate(set) var segmentioItems = [SegmentioItem]()
     fileprivate var segmentioCollectionView: UICollectionView?
     fileprivate var segmentioOptions = SegmentioOptions()
@@ -71,10 +71,17 @@ open class Segmentio: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         reloadSegmentio()
+        print("layoutSubviews")
+        print("indicatorLayer?.bounds - \(indicatorLayer?.bounds), indicatorLayer?.path - \(indicatorLayer?.path)")
     }
     
     fileprivate func commonInit() {
         setupSegmentedCollectionView()
+    }
+    
+    open override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
+        print("layoutSublayers of \(String(describing: type(of: layer)))")
     }
     
     fileprivate func setupSegmentedCollectionView() {
@@ -156,22 +163,45 @@ open class Segmentio: UIView {
             if let selectedLayer = selectedLayer, let sublayer = segmentioCollectionView?.layer {
                 setupShapeLayer(
                     shapeLayer: selectedLayer,
-                    backgroundColor: segmentioOptions.states.selectedState.backgroundColor,
+                    backgroundColors: [[segmentioOptions.states.selectedState.backgroundColor]],
                     height: bounds.height,
                     sublayer: sublayer
                 )
             }
         }
         
+        // TODO: make smart fill of colors
+        if segmentioOptions.indicatorOptions != nil {
+            let initialCount = segmentioOptions.indicatorOptions!.colorsForIndexes.count
+            while segmentioOptions.indicatorOptions!.colorsForIndexes.count < segmentioItems.count {
+                let colorsForIndexes = segmentioOptions.indicatorOptions!.colorsForIndexes
+                segmentioOptions.indicatorOptions!.colorsForIndexes = colorsForIndexes + [colorsForIndexes[colorsForIndexes.count % initialCount]]
+            }
+        }
+        
+        
         if let indicatorOptions = segmentioOptions.indicatorOptions {
             indicatorLayer = CAShapeLayer()
             if let indicatorLayer = indicatorLayer {
                 setupShapeLayer(
                     shapeLayer: indicatorLayer,
-                    backgroundColor: indicatorOptions.color,
+                    backgroundColors: nil,
                     height: indicatorOptions.height,
                     sublayer: layer
                 )
+                
+                var gradient: CAGradientLayer
+                if let gradientLayer = indicatorLayer.sublayers?[0] as? CAGradientLayer {
+                    gradient = gradientLayer
+                } else {
+                    gradient = CAGradientLayer()
+                    gradient.delegate = self
+                    
+                    gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+                    gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+                    
+                    indicatorLayer.insertSublayer(gradient, at: 0)
+                }
             }
         }
         
@@ -195,7 +225,7 @@ open class Segmentio: UIView {
         segmentioItems[index].addBadge(count, gradientColors: gradientColors)
         segmentioCollectionView?.reloadData()
     }
-        
+    
     open func removeBadge(at index: Int) {
         segmentioItems[index].removeBadge()
         segmentioCollectionView?.reloadData()
@@ -268,7 +298,7 @@ open class Segmentio: UIView {
     fileprivate func setupConstraintsForSeparatorView(separatorView: UIView?, originY: CGFloat) {
         guard let horizontalSeparatorOptions = segmentioOptions.horizontalSeparatorOptions,
             let separatorView = separatorView else {
-            return
+                return
         }
         
         separatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -321,11 +351,13 @@ open class Segmentio: UIView {
     }
     
     // MARK: CAShapeLayers setup
-
-    fileprivate func setupShapeLayer(shapeLayer: CAShapeLayer, backgroundColor: UIColor, height: CGFloat,
+    
+    fileprivate func setupShapeLayer(shapeLayer: CAShapeLayer, backgroundColors: [[UIColor]]?, height: CGFloat,
                                      sublayer: CALayer) {
-        shapeLayer.fillColor = backgroundColor.cgColor
-        shapeLayer.strokeColor = backgroundColor.cgColor
+        if backgroundColors != nil {
+            shapeLayer.fillColor = backgroundColors![0][0].cgColor
+            shapeLayer.strokeColor = backgroundColors![0][0].cgColor
+        }
         shapeLayer.lineWidth = height
         layer.insertSublayer(shapeLayer, below: sublayer)
     }
@@ -339,14 +371,14 @@ open class Segmentio: UIView {
         scrollToItemAtContext()
         moveShapeLayerAtContext()
     }
-
+    
     // MARK: Move shape layer to item
     
     fileprivate func moveShapeLayerAtContext() {
         if let indicatorLayer = indicatorLayer, let options = segmentioOptions.indicatorOptions {
             let item = itemInSuperview(ratio: options.ratio)
             let context = contextForItem(item)
-
+            
             let points = Points(
                 context: context,
                 item: item,
@@ -363,12 +395,15 @@ open class Segmentio: UIView {
                 endPoint: points.endPoint,
                 animated: true
             )
+            if let gradientLayer = indicatorLayer.sublayers?[0] as? CAGradientLayer {
+                moveGradientLayer(gradientLayer, startPoint: nil, endPoint: nil, animated: true)
+            }
         }
         
         if let selectedLayer = selectedLayer {
             let item = itemInSuperview()
             let context = contextForItem(item)
-
+            
             let points = Points(
                 context: context,
                 item: item,
@@ -387,6 +422,36 @@ open class Segmentio: UIView {
             )
         }
     }
+
+    /*
+     -(void)resizeLayer:(CALayer*)layer to:(CGSize)size
+     {
+     // Prepare the animation from the old size to the new size
+     CGRect oldBounds = layer.bounds;
+     CGRect newBounds = oldBounds;
+     newBounds.size = size;
+     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"bounds"];
+     
+     // NSValue/+valueWithRect:(NSRect)rect is available on Mac OS X
+     // NSValue/+valueWithCGRect:(CGRect)rect is available on iOS
+     // comment/uncomment the corresponding lines depending on which platform you're targeting
+     
+     // Mac OS X
+     animation.fromValue = [NSValue valueWithRect:NSRectFromCGRect(oldBounds)];
+     animation.toValue = [NSValue valueWithRect:NSRectFromCGRect(newBounds)];
+     // iOS
+     //animation.fromValue = [NSValue valueWithCGRect:oldBounds];
+     //animation.toValue = [NSValue valueWithCGRect:newBounds];
+     
+     // Update the layer's bounds so the layer doesn't snap back when the animation completes.
+     layer.bounds = newBounds;
+     
+     // Add the animation, overriding the implicit animation.
+     [layer addAnimation:animation forKey:@"bounds"];
+     }
+     */
+    
+    
     
     // MARK: Scroll to item
     
@@ -398,7 +463,7 @@ open class Segmentio: UIView {
         let item = itemInSuperview()
         segmentioCollectionView?.scrollRectToVisible(centerRect(for: item), animated: true)
     }
-
+    
     fileprivate func centerRect(for item: ItemInSuperview) -> CGRect {
         guard let collectionView = segmentioCollectionView else {
             fatalError("segmentioCollectionView should exist")
@@ -455,6 +520,79 @@ open class Segmentio: UIView {
         shapeLayer.path = shapeLayerPath.cgPath
     }
     
+    // MARK: Move gradient layer
+    
+    fileprivate func moveGradientLayer(_ gradientLayer: CAGradientLayer, startPoint: CGPoint?, endPoint: CGPoint?, animated: Bool = false) {
+        if let gradient = indicatorLayer?.sublayers?[0] as? CAGradientLayer {
+            let colorsForIndexes = segmentioOptions.indicatorOptions?.colorsForIndexes
+
+            if let rect = indicatorLayer?.path?.boundingBox {
+                gradient.frame = rect
+                gradient.frame.size.height = 5.0
+                gradient.frame.origin.y -= gradient.frame.size.height / 2.0
+                
+//                var endPointWithVerticalSeparator = endPoint
+//                let isLastItem = selectedSegmentioIndex + 1 == segmentioItems.count
+//                endPointWithVerticalSeparator?.x = endPoint?.x - (isLastItem ? 0 : 1)
+//                let newBounds = CGRect(x: startPoint.x, y: startPoint.y, width: endPoint.x - startPoint.x, height: endPoint.y - startPoint.y)
+//
+                var newBounds = rect// CGRect(x: startPoint.x, y: startPoint.y, width: endPoint.x - startPoint.x, height: endPoint.y - startPoint.y)
+                newBounds.size.height = 5.0
+
+                if animated == true {
+                    isPerformingScrollAnimation = true
+                    isUserInteractionEnabled = false
+
+                    var animations = [CABasicAnimation]()
+
+                    var posAnimation = CABasicAnimation(keyPath: "position")
+                    posAnimation.duration = segmentioOptions.animationDuration
+                    posAnimation.fromValue = [NSValue(cgPoint: gradient.position)]
+                    posAnimation.toValue = [NSValue(cgPoint: newBounds.origin)]
+                    animations.append(posAnimation)
+
+                    var widthAnimation = CABasicAnimation(keyPath: "bounds.size")
+
+                    widthAnimation.duration = segmentioOptions.animationDuration
+                    widthAnimation.fromValue =  [NSValue(cgSize: CGSize(width: gradient.bounds.size.width, height: gradient.bounds.size.height))]
+                    widthAnimation.toValue = [NSValue(cgSize: CGSize(width: newBounds.width, height: newBounds.height))]
+                    animations.append(widthAnimation)
+                    
+                    var colorAnimation : CABasicAnimation = CABasicAnimation(keyPath: "colors")
+                    
+                    colorAnimation.duration = segmentioOptions.animationDuration * 5.0
+                    colorAnimation.fromValue = gradientLayer.colors
+                    //gradient.colors = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
+                    colorAnimation.toValue = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
+                    //colorAnimation.isRemovedOnCompletion = true
+                    colorAnimation.fillMode = kCAFillModeForwards
+                    colorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+                    animations.append(colorAnimation)
+
+                    let group = CAAnimationGroup()
+
+                    group.duration = segmentioOptions.animationDuration * 5.0
+                    group.animations = animations
+                    gradientLayer.add(group, forKey: nil)
+
+//                    CATransaction.begin()
+//                    let animation = CABasicAnimation(keyPath: "frame")
+//                    animation.fromValue = gradientLayer.frame
+//                    animation.toValue = newFrame
+//                    animation.duration = segmentioOptions.animationDuration
+//                    CATransaction.setCompletionBlock() {
+//                        self.isPerformingScrollAnimation = false
+//                        self.isUserInteractionEnabled = true
+//                    }
+//                    gradientLayer.add(animation, forKey: "frame")
+//                    CATransaction.commit()
+                }
+ //               gradientLayer.frame = rect
+                gradientLayer.colors = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
+            }
+        }
+    }
+    
     // MARK: - Context for item
     
     fileprivate func contextForItem(_ item: ItemInSuperview) -> Context {
@@ -495,7 +633,7 @@ open class Segmentio: UIView {
             switch segmentioOptions.segmentPosition {
             case .fixed, .fixedByLargest:
                 x = floor(CGFloat(selectedSegmentioIndex) * cellWidth - collectionView.contentOffset.x)
-          
+                
             case .dynamic:
                 for i in 0..<selectedSegmentioIndex {
                     x += segmentWidth(for: IndexPath(item: i, section: 0))
@@ -522,9 +660,9 @@ open class Segmentio: UIView {
             endX: floor(cellRect.midX + (shapeLayerWidth / 2))
         )
     }
-
+    
     // MARK: - Segment Width
-
+    
     fileprivate func segmentWidth(for indexPath: IndexPath) -> CGFloat {
         guard let collectionView = segmentioCollectionView else {
             return 0
@@ -568,7 +706,7 @@ open class Segmentio: UIView {
         
         return width
     }
-
+    
     fileprivate static func intrinsicWidth(for item: SegmentioItem, style: SegmentioStyle) -> CGFloat {
         var itemWidth = style.isWithText() ? item.intrinsicWidth : (item.image?.size.width ?? 0)
         itemWidth += style.layoutMargins
@@ -579,7 +717,7 @@ open class Segmentio: UIView {
         
         return itemWidth
     }
-
+    
     // MARK: - Indicator point Y
     
     fileprivate func indicatorPointY() -> CGFloat {
@@ -680,12 +818,12 @@ extension Segmentio: UICollectionViewDelegateFlowLayout {
 // MARK: - UIScrollViewDelegate
 
 extension Segmentio: UIScrollViewDelegate {
-
+    
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if isPerformingScrollAnimation {
             return
         }
-
+        
         if let options = segmentioOptions.indicatorOptions, let indicatorLayer = indicatorLayer {
             let item = itemInSuperview(ratio: options.ratio)
             moveShapeLayer(
@@ -694,6 +832,10 @@ extension Segmentio: UIScrollViewDelegate {
                 endPoint: CGPoint(x: item.endX, y: indicatorPointY()),
                 animated: false
             )
+            
+            if let gradientLayer = indicatorLayer.sublayers?[0] as? CAGradientLayer {
+                moveGradientLayer(gradientLayer, startPoint: nil, endPoint: nil, animated: false)
+            }
         }
         
         if let selectedLayer = selectedLayer {
@@ -706,7 +848,7 @@ extension Segmentio: UIScrollViewDelegate {
             )
         }
     }
-
+    
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         isCollectionViewScrolling = false
     }
@@ -721,7 +863,7 @@ extension Segmentio.Points {
         
         var startX = item.startX
         var endX = item.endX
-
+        
         switch position {
         case .fixed(_), .fixedByLargest:
             if context.isFirstCell == false && context.isLastCell == false {
@@ -732,7 +874,7 @@ extension Segmentio.Points {
                     let updatedEndX = updatedStartX + item.shapeLayerWidth
                     endX = updatedEndX
                 }
-    
+                
                 if context.isFirstOrSecondVisibleCell == true {
                     let updatedEndX = (cellWidth * 2) - ((cellWidth - item.shapeLayerWidth) / 2)
                     endX = updatedEndX

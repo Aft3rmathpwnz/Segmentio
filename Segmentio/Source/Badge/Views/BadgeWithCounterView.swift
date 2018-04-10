@@ -34,18 +34,12 @@ class BadgeWithCounterView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if areSubviewsLayouted == false {
-            print("layoutSubviews")
-            print("backgroundImageView frame - \(backgroundImageView.frame)")
             if gradientColors != nil {
                 let gradient = CAGradientLayer()
                 gradient.frame = backgroundImageView.bounds
                 gradient.colors = gradientColors!.map({ $0.cgColor })
                 gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
                 gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-                
-                let testLayer = CALayer()
-                testLayer.frame = backgroundImageView.bounds
-                testLayer.backgroundColor = gradientColors![1].cgColor
                 
                 let maskLayer = CAShapeLayer()
                 maskLayer.path = UIBezierPath(roundedRect: backgroundImageView.bounds, byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight], cornerRadii: CGSize(width: backgroundImageView.bounds.height / 2.0, height: backgroundImageView.bounds.height / 2.0)).cgPath

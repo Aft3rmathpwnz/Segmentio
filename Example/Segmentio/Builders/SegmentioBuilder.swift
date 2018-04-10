@@ -59,7 +59,8 @@ struct SegmentioBuilder {
             type: .bottom,
             ratio: 1,
             height: 5,
-            color: .orange
+//            colorsForIndexes: [[.red, .red], [.orange, .red], [.yellow, .red], [.green, .red], [.blue, .red]]
+            colorsForIndexes: [[.yellow, .red], [.green, .red], [.blue, .red]]
         )
         
         let horizontalSeparatorOptions = SegmentioHorizontalSeparatorOptions(
@@ -133,7 +134,7 @@ struct SegmentioBuilder {
             type: .bottom,
             ratio: 1,
             height: 5,
-            color: ColorPalette.coral
+            colorsForIndexes: [[.orange, .black], [.orange, .red]]
         )
     }
     

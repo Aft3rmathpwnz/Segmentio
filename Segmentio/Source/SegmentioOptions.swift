@@ -122,14 +122,14 @@ public struct SegmentioIndicatorOptions {
     var type: SegmentioIndicatorType
     var ratio: CGFloat
     var height: CGFloat
-    var color: UIColor
+    var colorsForIndexes: [[UIColor]]
     
     public init(type: SegmentioIndicatorType = .bottom, ratio: CGFloat = 1, height: CGFloat = 2,
-                color: UIColor = .orange) {
+                colorsForIndexes: [[UIColor]] = [[.orange]]) {
         self.type = type
         self.ratio = ratio
         self.height = height
-        self.color = color
+        self.colorsForIndexes = colorsForIndexes
     }
     
 }
