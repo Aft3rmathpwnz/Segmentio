@@ -71,17 +71,10 @@ open class Segmentio: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         reloadSegmentio()
-        print("layoutSubviews")
-        print("indicatorLayer?.bounds - \(indicatorLayer?.bounds), indicatorLayer?.path - \(indicatorLayer?.path)")
     }
     
     fileprivate func commonInit() {
         setupSegmentedCollectionView()
-    }
-    
-    open override func layoutSublayers(of layer: CALayer) {
-        super.layoutSublayers(of: layer)
-        print("layoutSublayers of \(String(describing: type(of: layer)))")
     }
     
     fileprivate func setupSegmentedCollectionView() {
@@ -170,7 +163,7 @@ open class Segmentio: UIView {
             }
         }
         
-        // TODO: make smart fill of colors
+        // Fill fradient colors boundaries to match items count if not enough
         if segmentioOptions.indicatorOptions != nil {
             let initialCount = segmentioOptions.indicatorOptions!.colorsForIndexes.count
             while segmentioOptions.indicatorOptions!.colorsForIndexes.count < segmentioItems.count {
@@ -178,7 +171,6 @@ open class Segmentio: UIView {
                 segmentioOptions.indicatorOptions!.colorsForIndexes = colorsForIndexes + [colorsForIndexes[colorsForIndexes.count % initialCount]]
             }
         }
-        
         
         if let indicatorOptions = segmentioOptions.indicatorOptions {
             indicatorLayer = CAShapeLayer()
@@ -528,16 +520,8 @@ open class Segmentio: UIView {
 
             if let rect = indicatorLayer?.path?.boundingBox {
                 gradient.frame = rect
-                gradient.frame.size.height = 5.0
+                gradient.frame.size.height = segmentioOptions.indicatorOptions?.height ?? 0.0
                 gradient.frame.origin.y -= gradient.frame.size.height / 2.0
-                
-//                var endPointWithVerticalSeparator = endPoint
-//                let isLastItem = selectedSegmentioIndex + 1 == segmentioItems.count
-//                endPointWithVerticalSeparator?.x = endPoint?.x - (isLastItem ? 0 : 1)
-//                let newBounds = CGRect(x: startPoint.x, y: startPoint.y, width: endPoint.x - startPoint.x, height: endPoint.y - startPoint.y)
-//
-                var newBounds = rect// CGRect(x: startPoint.x, y: startPoint.y, width: endPoint.x - startPoint.x, height: endPoint.y - startPoint.y)
-                newBounds.size.height = 5.0
 
                 if animated == true {
                     isPerformingScrollAnimation = true
@@ -545,49 +529,35 @@ open class Segmentio: UIView {
 
                     var animations = [CABasicAnimation]()
 
-                    var posAnimation = CABasicAnimation(keyPath: "position")
+                    let posAnimation = CABasicAnimation(keyPath: "position")
                     posAnimation.duration = segmentioOptions.animationDuration
                     posAnimation.fromValue = [NSValue(cgPoint: gradient.position)]
-                    posAnimation.toValue = [NSValue(cgPoint: newBounds.origin)]
+                    posAnimation.toValue = [NSValue(cgPoint: gradient.frame.origin)]
                     animations.append(posAnimation)
 
-                    var widthAnimation = CABasicAnimation(keyPath: "bounds.size")
+                    let widthAnimation = CABasicAnimation(keyPath: "bounds.size")
 
                     widthAnimation.duration = segmentioOptions.animationDuration
                     widthAnimation.fromValue =  [NSValue(cgSize: CGSize(width: gradient.bounds.size.width, height: gradient.bounds.size.height))]
-                    widthAnimation.toValue = [NSValue(cgSize: CGSize(width: newBounds.width, height: newBounds.height))]
+                    widthAnimation.toValue = [NSValue(cgSize: CGSize(width: gradient.frame.width, height: gradient.frame.height))]
                     animations.append(widthAnimation)
                     
-                    var colorAnimation : CABasicAnimation = CABasicAnimation(keyPath: "colors")
+                    let colorAnimation : CABasicAnimation = CABasicAnimation(keyPath: "colors")
                     
-                    colorAnimation.duration = segmentioOptions.animationDuration * 5.0
+                    colorAnimation.duration = segmentioOptions.animationDuration * 2.0
                     colorAnimation.fromValue = gradientLayer.colors
-                    //gradient.colors = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
                     colorAnimation.toValue = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
-                    //colorAnimation.isRemovedOnCompletion = true
+                    colorAnimation.isRemovedOnCompletion = true
                     colorAnimation.fillMode = kCAFillModeForwards
                     colorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
                     animations.append(colorAnimation)
 
                     let group = CAAnimationGroup()
 
-                    group.duration = segmentioOptions.animationDuration * 5.0
+                    group.duration = segmentioOptions.animationDuration * 2.0
                     group.animations = animations
                     gradientLayer.add(group, forKey: nil)
-
-//                    CATransaction.begin()
-//                    let animation = CABasicAnimation(keyPath: "frame")
-//                    animation.fromValue = gradientLayer.frame
-//                    animation.toValue = newFrame
-//                    animation.duration = segmentioOptions.animationDuration
-//                    CATransaction.setCompletionBlock() {
-//                        self.isPerformingScrollAnimation = false
-//                        self.isUserInteractionEnabled = true
-//                    }
-//                    gradientLayer.add(animation, forKey: "frame")
-//                    CATransaction.commit()
                 }
- //               gradientLayer.frame = rect
                 gradientLayer.colors = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
             }
         }
