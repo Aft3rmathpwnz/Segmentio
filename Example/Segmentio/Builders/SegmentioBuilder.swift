@@ -12,19 +12,11 @@ import UIKit
 struct SegmentioBuilder {
     
     static func setupBadgeCountForIndex(_ segmentioView: Segmentio, index: Int) {
-        if index % 2 == 0 {
             segmentioView.addBadge(
                 at: index,
-                count: 10,
-                color: ColorPalette.coral
+                count: (index + 1)*10,
+                gradientColors: [ColorPalette.coral, .green]
             )
-        } else {
-            segmentioView.addBadge(
-                at: index,
-                count: 10,
-                gradientColors: [ColorPalette.coral, ColorPalette.grayChateau]
-            )
-        }
     }
     
     static func buildSegmentioView(segmentioView: Segmentio, segmentioStyle: SegmentioStyle, segmentioPosition: SegmentioPosition = .fixed(maxVisibleItems: 3)) {
@@ -89,7 +81,7 @@ struct SegmentioBuilder {
         
         return SegmentioOptions(
             backgroundColor: .black,
-            segmentPosition: .fixedByLargest,
+            segmentPosition: .fixed(maxVisibleItems: 4),
             scrollEnabled: true,
             indicatorOptions: indicatorOptions,
             horizontalSeparatorOptions: horizontalSeparatorOptions,

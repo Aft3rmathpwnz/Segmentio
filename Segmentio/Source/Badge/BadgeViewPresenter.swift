@@ -11,7 +11,7 @@ import UIKit
 class BadgeViewPresenter {
     
     func addBadgeForContainerView(_ containerView: UIView, counterValue: Int, backgroundColor: UIColor = .red,
-                                  badgeSize: BadgeSize = .standard) {
+                                  badgeSize: BadgeSize = .standard, relativeTo relativeView: UIView) {
         var badgeView: BadgeWithCounterView!
         for view in containerView.subviews {
             if view is BadgeWithCounterView {
@@ -25,12 +25,12 @@ class BadgeViewPresenter {
             badgeView.translatesAutoresizingMaskIntoConstraints = false
             containerView.addSubview(badgeView)
             containerView.bringSubview(toFront: badgeView)
-            setupBadgeConstraints(badgeView, counterValue: counterValue)
+            setupBadgeConstraints(badgeView, counterValue: counterValue, relativeTo: relativeView)
         }
     }
     
     func addBadgeForContainerView(_ containerView: UIView, counterValue: Int, backgroundColors: [UIColor],
-                                  badgeSize: BadgeSize = .standard) {
+                                  badgeSize: BadgeSize = .standard, relativeTo relativeView: UIView) {
         var badgeView: BadgeWithCounterView!
         for view in containerView.subviews {
             if view is BadgeWithCounterView {
@@ -44,7 +44,7 @@ class BadgeViewPresenter {
             badgeView.translatesAutoresizingMaskIntoConstraints = false
             containerView.addSubview(badgeView)
             containerView.bringSubview(toFront: badgeView)
-            setupBadgeConstraints(badgeView, counterValue: counterValue)
+            setupBadgeConstraints(badgeView, counterValue: counterValue, relativeTo: relativeView)
         }
     }
     
@@ -56,7 +56,7 @@ class BadgeViewPresenter {
         }
     }
     
-    fileprivate func setupBadgeConstraints(_ badgeView: BadgeWithCounterView, counterValue: Int) {
+    fileprivate func setupBadgeConstraints(_ badgeView: BadgeWithCounterView, counterValue: Int, relativeTo relativeView: UIView) {
         var constraintConstant:CGFloat = -5.0
         if counterValue > 9 {
             constraintConstant = -10.0
@@ -66,10 +66,10 @@ class BadgeViewPresenter {
                 item: badgeView,
                 attribute: .top,
                 relatedBy: .equal,
-                toItem: badgeView.superview,
+                toItem: relativeView,
                 attribute: .top,
                 multiplier: 1,
-                constant: badgeView.superview is UILabel ? 0 : 6.0
+                constant: 0
         )
         
         let segmentTitleLabelVerticalCenterConstraint =
@@ -77,10 +77,10 @@ class BadgeViewPresenter {
                 item: badgeView,
                 attribute: .trailing,
                 relatedBy: .equal,
-                toItem: badgeView.superview,
+                toItem: relativeView,
                 attribute: .trailing,
                 multiplier: 1,
-                constant: badgeView.superview is UILabel ? badgeView.frame.size.height / 3.0 : constraintConstant
+                constant: badgeView.frame.size.height / 3.0
         )
         segmentTitleLabelHorizontalCenterConstraint.isActive = true
         segmentTitleLabelVerticalCenterConstraint.isActive = true

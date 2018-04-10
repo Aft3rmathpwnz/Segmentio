@@ -164,14 +164,16 @@ class SegmentioCell: UICollectionViewCell {
                 imageContainerView!,
                 counterValue: badgeCount,
                 backgroundColor: color,
-                badgeSize: .standard
+                badgeSize: .standard,
+                relativeTo: imageContainerView!
             )
         } else {
             badgePresenter.addBadgeForContainerView(
-                segmentTitleLabel!,
+                containerView!,
                 counterValue: badgeCount,
                 backgroundColor: color,
-                badgeSize: .standard
+                badgeSize: .standard,
+                relativeTo: segmentTitleLabel!
             )
         }
     }
@@ -186,14 +188,16 @@ class SegmentioCell: UICollectionViewCell {
                 imageContainerView!,
                 counterValue: badgeCount,
                 backgroundColors: gradientColors,
-                badgeSize: .standard
+                badgeSize: .standard,
+                relativeTo: imageContainerView!
             )
         } else {
             badgePresenter.addBadgeForContainerView(
-                segmentTitleLabel!,
+                containerView!,
                 counterValue: badgeCount,
                 backgroundColors: gradientColors,
-                badgeSize: .standard
+                badgeSize: .standard,
+                relativeTo: segmentTitleLabel!
             )
         }
     }

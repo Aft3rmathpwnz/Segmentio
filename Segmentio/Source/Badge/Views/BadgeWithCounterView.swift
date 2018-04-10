@@ -71,8 +71,6 @@ class BadgeWithCounterView: UIView {
     
     func setBadgeBackgroundColors(_ gradientColors: [UIColor]) {
         self.gradientColors = gradientColors
-        
-        //backgroundImageView.backgroundColor = gradientColors[0]
     }
     
     fileprivate class func nibNameForSize(_ size: BadgeSize) -> String {
