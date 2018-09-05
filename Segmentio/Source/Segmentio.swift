@@ -240,15 +240,42 @@ open class Segmentio: UIView {
                 return SegmentioCellWithImageBeforeLabel.self
             case .imageAfterLabel:
                 return SegmentioCellWithImageAfterLabel.self
+            case .imageLabelToggle:
+                return SegmentioCellLabelImageToggle.self
             }
         }
         
-        segmentioCollectionView?.register(
-            cellClass,
-            forCellWithReuseIdentifier: segmentioStyle.rawValue
-        )
+        let cellStyles = Set(segmentioItems.map { styleFor(item: $0) } )
+        
+        for cellStyle in cellStyles {
+            segmentioCollectionView?.register(
+                cellClassForStyle(cellStyle),
+                forCellWithReuseIdentifier: cellStyle.rawValue
+            )
+        }
+        
+        
         
         segmentioCollectionView?.layoutIfNeeded()
+    }
+    
+    fileprivate func cellClassForStyle(_ style: SegmentioStyle) -> SegmentioCell.Type {
+        switch style {
+        case .onlyLabel:
+            return SegmentioCellWithLabel.self
+        case .onlyImage:
+            return SegmentioCellWithImage.self
+        case .imageOverLabel:
+            return SegmentioCellWithImageOverLabel.self
+        case .imageUnderLabel:
+            return SegmentioCellWithImageUnderLabel.self
+        case .imageBeforeLabel:
+            return SegmentioCellWithImageBeforeLabel.self
+        case .imageAfterLabel:
+            return SegmentioCellWithImageAfterLabel.self
+        case .imageLabelToggle:
+            return SegmentioCellLabelImageToggle.self
+        }
     }
     
     // MARK: Horizontal separators setup
@@ -650,7 +677,7 @@ open class Segmentio: UIView {
             var biggestWidth: CGFloat = 0
             var dynamicWidth: CGFloat = 0
             for item in segmentioItems {
-                let width = Segmentio.intrinsicWidth(for: item, style: segmentioStyle)
+                let width = Segmentio.intrinsicWidth(for: item, style: styleFor(item: item))
                 if width > biggestWidth {
                     biggestWidth = width
                 }
@@ -667,9 +694,9 @@ open class Segmentio: UIView {
             
             var dynamicWidth: CGFloat = 0
             for item in segmentioItems {
-                dynamicWidth += Segmentio.intrinsicWidth(for: item, style: segmentioStyle)
+                dynamicWidth += Segmentio.intrinsicWidth(for: item, style: styleFor(item: item))
             }
-            let itemWidth = Segmentio.intrinsicWidth(for: segmentioItems[indexPath.row], style: segmentioStyle)
+            let itemWidth = Segmentio.intrinsicWidth(for: segmentioItems[indexPath.row], style: styleFor(item: segmentioItems[indexPath.row]))
             width = dynamicWidth > collectionViewWidth ? itemWidth
                 : itemWidth + ((collectionViewWidth - dynamicWidth) / CGFloat(segmentioItems.count))
         }
@@ -736,15 +763,16 @@ extension Segmentio: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView,
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: segmentioStyle.rawValue,
-            for: indexPath) as! SegmentioCell
-        
         let content = segmentioItems[indexPath.row]
+
+        let reuseIdentifier = styleFor(item: content).rawValue
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: reuseIdentifier,
+            for: indexPath) as! SegmentioCell
         
         cell.configure(
             content: content,
-            style: segmentioStyle,
+            style: SegmentioStyle(rawValue: reuseIdentifier)!,
             options: segmentioOptions,
             isLastCell: indexPath.row == segmentioItems.count - 1
         )
@@ -756,6 +784,16 @@ extension Segmentio: UICollectionViewDataSource {
         )
         
         return cell
+    }
+    
+    fileprivate func styleFor(item: SegmentioItem) -> SegmentioStyle {
+        var style = segmentioStyle
+        if item.image == nil {
+            style = SegmentioStyle.onlyLabel
+        } else if item.title == nil || item.title?.count == 0 {
+            style = SegmentioStyle.onlyImage
+        }
+        return style
     }
     
 }

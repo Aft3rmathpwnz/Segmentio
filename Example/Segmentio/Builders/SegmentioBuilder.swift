@@ -29,17 +29,16 @@ struct SegmentioBuilder {
     
     private static func segmentioContent() -> [SegmentioItem] {
         return [
-            SegmentioItem(title: "DEV", image: UIImage(named: "tornado")),
-            SegmentioItem(title: "TEST", image: UIImage(named: "earthquakes")),
-            SegmentioItem(title: "UAT", image: UIImage(named: "heat")),
-            SegmentioItem(title: "LOAD1", image: UIImage(named: "eruption")),
-            SegmentioItem(title: "LOAD2", image: UIImage(named: "floods"))
+            SegmentioItem(title: "Новости", image: UIImage(named: "tornado"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Sales portal", image: UIImage(named: "earthquakes"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Лента", image: UIImage(named: "heat"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Блоги", image: UIImage(named: "floods"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
             //SegmentioItem(title: "Wildfires", image: UIImage(named: "wildfires"))
         ]
     }
     
     private static func segmentioOptions(segmentioStyle: SegmentioStyle, segmentioPosition: SegmentioPosition = .fixed(maxVisibleItems: 3)) -> SegmentioOptions {
-        var imageContentMode = UIViewContentMode.center
+        var imageContentMode = UIViewContentMode.scaleAspectFit
         switch segmentioStyle {
         case .imageBeforeLabel, .imageAfterLabel:
             imageContentMode = .scaleAspectFit
@@ -47,46 +46,32 @@ struct SegmentioBuilder {
             break
         }
         
-        let indicatorOptions = SegmentioIndicatorOptions(
-            type: .bottom,
-            ratio: 1,
-            height: 5,
-//            colorsForIndexes: [[.red, .red], [.orange, .red], [.yellow, .red], [.green, .red], [.blue, .red]]
-            colorsForIndexes: [[.yellow, .red], [.green, .red], [.blue, .red]]
-        )
-        
-        let horizontalSeparatorOptions = SegmentioHorizontalSeparatorOptions(
-            type: .none,
-            height: 0,
-            color: .clear
-        )
-        
         let states = SegmentioStates(
             defaultState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont: UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
-                titleTextColor: .white
+                titleFont: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleTextColor: .black
             ),
             selectedState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont:  UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
-                titleTextColor: .white
+                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleTextColor: .black
             ),
             highlightedState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont:  UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.medium),
-                titleTextColor: .white
+                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleTextColor: .black
             )
         )
         
         return SegmentioOptions(
-            backgroundColor: .black,
-            segmentPosition: .fixed(maxVisibleItems: 4),
+            backgroundColor: .clear,
+            segmentPosition: .dynamic,
             scrollEnabled: true,
-            indicatorOptions: indicatorOptions,
-            horizontalSeparatorOptions: horizontalSeparatorOptions,
+            indicatorOptions: nil,
+            horizontalSeparatorOptions: nil,
             verticalSeparatorOptions: nil,
-            imageContentMode: .center,
+            imageContentMode: imageContentMode,
             labelTextAlignment: .center,
             segmentStates: states
         )

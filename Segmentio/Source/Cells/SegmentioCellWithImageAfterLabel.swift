@@ -40,6 +40,7 @@ final class SegmentioCellWithImageAfterLabel: SegmentioCell {
             metrics: metrics,
             views: views)
         NSLayoutConstraint.activate(contentViewHorizontalConstraints)
+        
         // custom constraints
         
         topConstraint = NSLayoutConstraint(

@@ -11,7 +11,7 @@ import Segmentio
 
 class ExampleViewController: UIViewController {
     
-    var segmentioStyle = SegmentioStyle.imageOverLabel
+    var segmentioStyle = SegmentioStyle.imageLabelToggle
     
     @IBOutlet fileprivate weak var segmentViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet fileprivate weak var segmentioView: Segmentio!
@@ -35,7 +35,7 @@ class ExampleViewController: UIViewController {
         super.viewDidLoad()
         
         switch segmentioStyle {
-        case .onlyLabel, .imageBeforeLabel, .imageAfterLabel:
+        case .onlyLabel, .imageBeforeLabel, .imageAfterLabel, .imageLabelToggle:
             segmentViewHeightConstraint.constant = 50
         case .onlyImage:
             segmentViewHeightConstraint.constant = 100
@@ -52,11 +52,9 @@ class ExampleViewController: UIViewController {
             segmentioView: segmentioView,
             segmentioStyle: segmentioStyle
         )
-        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 0)
-        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 1)
-        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 2)
-        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 3)
-        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 4)
+//        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 0)
+//        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 1)
+//        SegmentioBuilder.setupBadgeCountForIndex(segmentioView, index: 2)
         
 
         

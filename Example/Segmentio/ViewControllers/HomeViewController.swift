@@ -11,7 +11,7 @@ import Segmentio
 
 class HomeViewController: UIViewController {
     
-    fileprivate var currentStyle = SegmentioStyle.onlyLabel
+    fileprivate var currentStyle = SegmentioStyle.imageLabelToggle
     fileprivate var containerViewController: EmbedContainerViewController?
     
     // MARK: - Lifecycle

@@ -20,15 +20,18 @@ public struct SegmentioItem {
     public var badgeColors: [UIColor]?
     public var intrinsicWidth: CGFloat {
         let label = UILabel()
+        label.font = font
         label.text = self.title
         label.sizeToFit()
         return label.intrinsicContentSize.width
     }
+    public var font: UIFont?
 
-    public init(title: String?, image: UIImage?, selectedImage: UIImage? = nil) {
+    public init(title: String?, image: UIImage?, selectedImage: UIImage? = nil, font: UIFont? = UIFont.systemFont(ofSize: 17.0)) {
         self.title = title
         self.image = image
         self.selectedImage = selectedImage ?? image
+        self.font = font
     }
     
     public mutating func addBadge(_ count: Int, color: UIColor) {
@@ -146,7 +149,7 @@ public enum SegmentioPosition {
 
 public enum SegmentioStyle: String {
     
-    case onlyLabel, onlyImage, imageOverLabel, imageUnderLabel, imageBeforeLabel, imageAfterLabel
+    case onlyLabel, onlyImage, imageOverLabel, imageUnderLabel, imageBeforeLabel, imageAfterLabel, imageLabelToggle
     
     public static let allStyles = [
         onlyLabel,
@@ -154,12 +157,13 @@ public enum SegmentioStyle: String {
         imageOverLabel,
         imageUnderLabel,
         imageBeforeLabel,
-        imageAfterLabel
+        imageAfterLabel,
+        imageLabelToggle
     ]
     
     public func isWithText() -> Bool {
         switch self {
-        case .onlyLabel, .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel:
+        case .onlyLabel, .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel, .imageLabelToggle:
             return true
         default:
             return false
@@ -168,7 +172,7 @@ public enum SegmentioStyle: String {
     
     public func isWithImage() -> Bool {
         switch self {
-        case .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel, .onlyImage:
+        case .imageOverLabel, .imageUnderLabel, .imageBeforeLabel, .imageAfterLabel, .onlyImage, .imageLabelToggle:
             return true
         default:
             return false
@@ -178,7 +182,7 @@ public enum SegmentioStyle: String {
     public var layoutMargins: CGFloat {
         let defaultLayoutMargins: CGFloat = 8.0
         switch self {
-        case .onlyLabel, .imageAfterLabel, .imageBeforeLabel, .imageOverLabel, .imageUnderLabel:
+        case .onlyLabel, .imageAfterLabel, .imageBeforeLabel, .imageOverLabel, .imageUnderLabel, .imageLabelToggle:
             return 4 * defaultLayoutMargins
         case .onlyImage:
             return 2 * defaultLayoutMargins
