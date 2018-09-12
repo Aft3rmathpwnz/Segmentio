@@ -29,23 +29,14 @@ struct SegmentioBuilder {
     
     private static func segmentioContent() -> [SegmentioItem] {
         return [
-            SegmentioItem(title: "Новости", image: UIImage(named: "tornado"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Sales portal", image: UIImage(named: "earthquakes"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Лента", image: UIImage(named: "heat"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Блоги", image: UIImage(named: "floods"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
+            SegmentioItem(title: "Новости", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Sales portal", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
             //SegmentioItem(title: "Wildfires", image: UIImage(named: "wildfires"))
         ]
     }
     
     private static func segmentioOptions(segmentioStyle: SegmentioStyle, segmentioPosition: SegmentioPosition = .fixed(maxVisibleItems: 3)) -> SegmentioOptions {
-        var imageContentMode = UIViewContentMode.scaleAspectFit
-        switch segmentioStyle {
-        case .imageBeforeLabel, .imageAfterLabel:
-            imageContentMode = .scaleAspectFit
-        default:
-            break
-        }
-        
         let states = SegmentioStates(
             defaultState: SegmentioState(
                 backgroundColor: .clear,
@@ -69,9 +60,9 @@ struct SegmentioBuilder {
             segmentPosition: .dynamic,
             scrollEnabled: true,
             indicatorOptions: nil,
-            horizontalSeparatorOptions: nil,
+            horizontalSeparatorOptions: segmentioHorizontalSeparatorOptions(),
             verticalSeparatorOptions: nil,
-            imageContentMode: imageContentMode,
+            imageContentMode: .center,
             labelTextAlignment: .center,
             segmentStates: states
         )
@@ -117,8 +108,8 @@ struct SegmentioBuilder {
     
     private static func segmentioHorizontalSeparatorOptions() -> SegmentioHorizontalSeparatorOptions {
         return SegmentioHorizontalSeparatorOptions(
-            type: .topAndBottom,
-            height: 1,
+            type: .none,
+            height: 0,
             color: ColorPalette.whiteSmoke
         )
     }
