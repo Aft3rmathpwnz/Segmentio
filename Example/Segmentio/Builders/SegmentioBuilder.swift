@@ -32,7 +32,7 @@ struct SegmentioBuilder {
             SegmentioItem(title: "Новости", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
             SegmentioItem(title: "Sales portal", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
             SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
-            //SegmentioItem(title: "Wildfires", image: UIImage(named: "wildfires"))
+//            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
         ]
     }
     

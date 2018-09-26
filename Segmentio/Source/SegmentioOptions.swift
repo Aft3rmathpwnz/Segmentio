@@ -9,6 +9,18 @@
 import UIKit
 
 // MARK: - Item
+extension SegmentioItem: Equatable {
+    public static func == (lhs: SegmentioItem, rhs: SegmentioItem) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.image == rhs.image &&
+        lhs.selectedImage == rhs.selectedImage &&
+        lhs.badgeCount == rhs.badgeCount &&
+        lhs.badgeColor == rhs.badgeColor &&
+        lhs.badgeColors == rhs.badgeColors &&
+        lhs.intrinsicWidth == rhs.intrinsicWidth &&
+        lhs.font == rhs.font
+    }
+}
 
 public struct SegmentioItem {
     
@@ -23,6 +35,7 @@ public struct SegmentioItem {
         label.font = font
         label.text = self.title
         label.sizeToFit()
+        print("intrinsicContentSize = \(label.intrinsicContentSize.width)")
         return label.intrinsicContentSize.width
     }
     public var font: UIFont?
@@ -182,9 +195,11 @@ public enum SegmentioStyle: String {
     public var layoutMargins: CGFloat {
         let defaultLayoutMargins: CGFloat = 8.0
         switch self {
-        case .onlyLabel, .imageAfterLabel, .imageBeforeLabel, .imageOverLabel, .imageUnderLabel, .imageLabelToggle:
+        case .onlyLabel, .imageAfterLabel, .imageBeforeLabel, .imageOverLabel, .imageUnderLabel:
             return 4 * defaultLayoutMargins
         case .onlyImage:
+            return 2 * defaultLayoutMargins
+        case .imageLabelToggle:
             return 2 * defaultLayoutMargins
         }
     }

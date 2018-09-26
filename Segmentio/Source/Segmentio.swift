@@ -83,6 +83,7 @@ open class Segmentio: UIView {
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16.0, bottom: 0, right: 16.0)
         
         let collectionView = UICollectionView(
             frame: frameForSegmentCollectionView(),
@@ -677,7 +678,7 @@ open class Segmentio: UIView {
             var biggestWidth: CGFloat = 0
             var dynamicWidth: CGFloat = 0
             for item in segmentioItems {
-                let width = Segmentio.intrinsicWidth(for: item, style: styleFor(item: item))
+                let width = Segmentio.intrinsicWidth(for: item, style: styleFor(item: item), selected: selectedSegmentioIndex == indexPath.row)
                 if width > biggestWidth {
                     biggestWidth = width
                 }
@@ -694,18 +695,32 @@ open class Segmentio: UIView {
             
             var dynamicWidth: CGFloat = 0
             for item in segmentioItems {
-                dynamicWidth += Segmentio.intrinsicWidth(for: item, style: styleFor(item: item))
+                let selected = selectedSegmentioIndex == segmentioItems.index(of: item)
+                dynamicWidth += Segmentio.intrinsicWidth(for: item, style: styleFor(item: item), selected: selected)
             }
-            let itemWidth = Segmentio.intrinsicWidth(for: segmentioItems[indexPath.row], style: styleFor(item: segmentioItems[indexPath.row]))
+            let itemWidth = Segmentio.intrinsicWidth(for: segmentioItems[indexPath.row], style: styleFor(item: segmentioItems[indexPath.row]), selected: selectedSegmentioIndex == indexPath.row)
+//            width = itemWidth
+            let insets = (segmentioCollectionView!.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset
+            let freeSpacePerItem = ((collectionViewWidth - dynamicWidth - insets.left - insets.right) / CGFloat(segmentioItems.count))
             width = dynamicWidth > collectionViewWidth ? itemWidth
-                : itemWidth + ((collectionViewWidth - dynamicWidth) / CGFloat(segmentioItems.count))
+                : itemWidth + freeSpacePerItem
         }
         
         return width
     }
     
-    fileprivate static func intrinsicWidth(for item: SegmentioItem, style: SegmentioStyle) -> CGFloat {
-        var itemWidth = style.isWithText() ? item.intrinsicWidth : (item.image?.size.width ?? 0)
+    fileprivate static func intrinsicWidth(for item: SegmentioItem, style: SegmentioStyle, selected: Bool) -> CGFloat {
+        var itemWidth: CGFloat = 0
+        switch style {
+        case .imageLabelToggle:
+            if selected {
+                itemWidth = style.isWithText() ? item.intrinsicWidth : (item.image?.size.width ?? 0)
+            } else {
+                itemWidth = (item.image?.size.width ?? 0)
+            }
+        default:
+            itemWidth = style.isWithText() ? item.intrinsicWidth : (item.image?.size.width ?? 0)
+        }
         itemWidth += style.layoutMargins
         
         if style == .imageAfterLabel || style == .imageBeforeLabel {
@@ -780,8 +795,13 @@ extension Segmentio: UICollectionViewDataSource {
         cell.configure(
             selected: (indexPath.row == selectedSegmentioIndex),
             selectedImage: content.selectedImage,
-            image: content.image
+            image: content.image,
+            isFirstCell: indexPath.row == 0,
+            isLastCell: indexPath.row == segmentioItems.count - 1
         )
+        
+        cell.setNeedsUpdateConstraints()
+        cell.updateConstraintsIfNeeded()
         
         return cell
     }
@@ -821,6 +841,9 @@ extension Segmentio: UICollectionViewDelegateFlowLayout {
         return CGSize(width: segmentWidth(for: indexPath), height: collectionView.frame.height)
     }
     
+//    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        return UIEdgeInsets.zero
+//    }
 }
 
 // MARK: - UIScrollViewDelegate
@@ -905,7 +928,7 @@ extension Segmentio.Points {
         case .dynamic:
             // If the collection content view is not completely visible...
             // We have to calculate the final position of the item
-            let dynamicWidth = allItems.map { Segmentio.intrinsicWidth(for: $0, style: style) }.reduce(0, +)
+            let dynamicWidth = allItems.map { Segmentio.intrinsicWidth(for: $0, style: style, selected: false) }.reduce(0, +)
             
             if item.collectionViewWidth < dynamicWidth {
                 startX = 0
@@ -915,9 +938,9 @@ extension Segmentio.Points {
                 var i = 0
                 for item in allItems {
                     if i < index {
-                        spaceBefore += Segmentio.intrinsicWidth(for: item, style: style)
+                        spaceBefore += Segmentio.intrinsicWidth(for: item, style: style, selected: false)
                     } else if i > index {
-                        spaceAfter += Segmentio.intrinsicWidth(for: item, style: style)
+                        spaceAfter += Segmentio.intrinsicWidth(for: item, style: style, selected: false)
                     }
                     
                     i += 1

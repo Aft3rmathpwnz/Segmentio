@@ -136,7 +136,7 @@ class SegmentioCell: UICollectionViewCell {
         }
     }
     
-    func configure(selected: Bool, selectedImage: UIImage? = nil, image: UIImage? = nil) {
+    func configure(selected: Bool, selectedImage: UIImage? = nil, image: UIImage? = nil, isFirstCell: Bool, isLastCell: Bool) {
         cellSelected = selected
         
         let selectedState = options.states.selectedState
@@ -147,6 +147,10 @@ class SegmentioCell: UICollectionViewCell {
             segmentTitleLabel?.font = selected ? selectedState.titleFont : defaultState.titleFont
             segmentTitleLabel?.minimumScaleFactor = 0.5
             segmentTitleLabel?.adjustsFontSizeToFitWidth = true
+            if selected {
+                segmentTitleLabel?.textAlignment = isFirstCell ? .left : (isLastCell ? .right : self.options.labelTextAlignment)
+            }
+//            segmentTitleLabel?.textAlignment = selected ? (isFirstCell ? .left : (isLastCell ? .right : )) : self.options.labelTextAlignment
         }
         
         if (style != .onlyLabel) {
@@ -236,20 +240,20 @@ class SegmentioCell: UICollectionViewCell {
         let segmentTitleLabelTrailingConstraint = NSLayoutConstraint(
             item: segmentTitleLabel,
             attribute: .trailing,
-            relatedBy: .lessThanOrEqual,
+            relatedBy: .greaterThanOrEqual,
             toItem: containerView,
-            attribute: .trailingMargin,
+            attribute: .trailing,
             multiplier: 1.0,
-            constant: 0
+            constant: 0.0
         )
         let segmentTitleLabelLeadingConstraint = NSLayoutConstraint(
             item: segmentTitleLabel,
             attribute: .leading,
             relatedBy: .greaterThanOrEqual,
             toItem: containerView,
-            attribute: .leadingMargin,
+            attribute: .leading,
             multiplier: 1.0,
-            constant: 0
+            constant: 0.0
         )
         
         addConstraints([
@@ -334,7 +338,13 @@ class SegmentioCell: UICollectionViewCell {
             segmentTitleLabel?.font = defaultState.titleFont
             segmentTitleLabel?.text = content.title
             segmentTitleLabel?.minimumScaleFactor = 0.5
-            segmentTitleLabel?.adjustsFontSizeToFitWidth = true
+            segmentTitleLabel?.adjustsFontSizeToFitWidth = false
+            print("width = \(segmentTitleLabel?.frame)")
+            segmentTitleLabel?.sizeToFit()
+            print("width = \(segmentTitleLabel?.frame)")
+            self.setNeedsUpdateConstraints()
+            self.updateConstraintsIfNeeded()
+            print("width = \(segmentTitleLabel?.frame)")
         }
     }
     
