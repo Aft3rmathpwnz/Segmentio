@@ -334,7 +334,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vkr-KO-SOm" customClass="Segmentio" customModule="Segmentio">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="125"/>
-                                <color key="tintColor" red="0.94099998470000001" green="0.28999999170000001" blue="0.23499999939999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="tintColor" red="0.94099998470000001" green="0.28999999170000001" blue="0.9142020089285714" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="125" id="MbU-cC-j02"/>
                                 </constraints>

@@ -702,7 +702,7 @@ open class Segmentio: UIView {
 //            width = itemWidth
             let insets = (segmentioCollectionView!.collectionViewLayout as! UICollectionViewFlowLayout).sectionInset
             let freeSpacePerItem = ((collectionViewWidth - dynamicWidth - insets.left - insets.right) / CGFloat(segmentioItems.count))
-            width = dynamicWidth > collectionViewWidth ? itemWidth
+            width = dynamicWidth + insets.left + insets.right > collectionViewWidth ? itemWidth
                 : itemWidth + freeSpacePerItem
         }
         

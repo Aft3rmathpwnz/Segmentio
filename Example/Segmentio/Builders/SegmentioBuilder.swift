@@ -29,9 +29,9 @@ struct SegmentioBuilder {
     
     private static func segmentioContent() -> [SegmentioItem] {
         return [
-            SegmentioItem(title: "Новости", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Sales portal", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
+            SegmentioItem(title: "Посты", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Пользователи", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
+//            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
 //            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
         ]
     }
