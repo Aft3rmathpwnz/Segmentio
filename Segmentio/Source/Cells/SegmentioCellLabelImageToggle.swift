@@ -29,7 +29,7 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
             guard let containerView = containerView, let imageContainerView = imageContainerView else {
                 return
             }
-            
+                        
             views = ["containerView": containerView]
             
             // main constraints
@@ -69,7 +69,7 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
 //                self.layoutIfNeeded()
 //            })
 
-            UIView.animate(withDuration: 0.3/*Animation Duration second*/, animations: {
+            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
                 imageContainerView.alpha = 0
                 containerView.alpha = 1
 //                self.layoutIfNeeded()
@@ -121,7 +121,7 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
 //                self.layoutIfNeeded()
 //            })
             
-            UIView.animate(withDuration: 0.3/*Animation Duration second*/, animations: {
+            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
                 containerView.alpha = 0
                 imageContainerView.alpha = 1
 //                self.layoutIfNeeded()
