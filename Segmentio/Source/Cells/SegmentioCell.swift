@@ -21,11 +21,7 @@ class SegmentioCell: UICollectionViewCell {
     
     var topConstraint: NSLayoutConstraint?
     var bottomConstraint: NSLayoutConstraint?
-    var cellSelected = false {
-        didSet {
-            print("cellSelected SET TO \(cellSelected)")
-        }
-    }
+    var cellSelected = false 
     
     fileprivate var options = SegmentioOptions()
     fileprivate var style = SegmentioStyle.imageOverLabel

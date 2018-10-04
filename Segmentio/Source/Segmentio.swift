@@ -799,7 +799,7 @@ extension Segmentio: UICollectionViewDataSource {
 
         
         let selected = indexPath.row == selectedSegmentioIndex
-        print("Cell at \(indexPath) was SELECTED = \(cell.cellSelected))")
+//        print("Cell at \(indexPath) was SELECTED = \(cell.cellSelected))")
         cell.configure(
             selected:selected,
             selectedImage: content.selectedImage,
@@ -833,7 +833,7 @@ extension Segmentio: UICollectionViewDataSource {
         
      
         
-        print("Cell at \(indexPath) NOW SELECTED = \(cell.cellSelected))")
+//        print("Cell at \(indexPath) NOW SELECTED = \(cell.cellSelected))")
         
         return cell
     }
@@ -866,7 +866,7 @@ extension Segmentio: UICollectionViewDelegate {
 //        }) { completed in
 //
 //        }
-        print("Item selected at \(indexPath)")
+//        print("Item selected at \(indexPath)")
 //        print("didSelectItemAt cell at \(indexPath) is selected = \(collectionView.cellForItem(at: indexPath)?.isSelected)")
     }
     
