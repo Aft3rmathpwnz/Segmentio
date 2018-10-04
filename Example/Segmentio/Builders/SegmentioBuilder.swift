@@ -29,9 +29,9 @@ struct SegmentioBuilder {
     
     private static func segmentioContent() -> [SegmentioItem] {
         return [
-            SegmentioItem(title: "Посты", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
-            SegmentioItem(title: "Пользователи", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
-//            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold)),
+            SegmentioItem(title: "Посты", image: UIImage(named: "ic_news"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold)),
+            SegmentioItem(title: "Пользователи", image: UIImage(named: "ic_sp"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold)),
+            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold)),
 //            SegmentioItem(title: "Лента", image: UIImage(named: "ic_feed"), font: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold))
         ]
     }
@@ -40,17 +40,17 @@ struct SegmentioBuilder {
         let states = SegmentioStates(
             defaultState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleFont: UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold),
                 titleTextColor: .black
             ),
             selectedState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold),
                 titleTextColor: .black
             ),
             highlightedState: SegmentioState(
                 backgroundColor: .clear,
-                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.bold),
+                titleFont:  UIFont.systemFont(ofSize: 34.0, weight: UIFont.Weight.semibold),
                 titleTextColor: .black
             )
         )

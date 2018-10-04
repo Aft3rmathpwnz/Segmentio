@@ -35,9 +35,11 @@ open class Segmentio: UIView {
     }
     
     open var valueDidChange: SegmentioSelectionCallback?
+    fileprivate var latestSelectedSegmentioIndex = -1
     open var selectedSegmentioIndex = -1 {
         didSet {
             if selectedSegmentioIndex != oldValue {
+                latestSelectedSegmentioIndex = oldValue
                 reloadSegmentio()
                 valueDidChange?(self, selectedSegmentioIndex)
             }
@@ -785,23 +787,53 @@ extension Segmentio: UICollectionViewDataSource {
             withReuseIdentifier: reuseIdentifier,
             for: indexPath) as! SegmentioCell
         
+//        print("Cell at \(indexPath) SELECTED = \(cell.cellSelected))")
         cell.configure(
             content: content,
             style: SegmentioStyle(rawValue: reuseIdentifier)!,
             options: segmentioOptions,
-            isLastCell: indexPath.row == segmentioItems.count - 1
+            isLastCell: indexPath.row == segmentioItems.count - 1,
+            wasSelected: indexPath.row == latestSelectedSegmentioIndex
         )
+//        print("Cell at \(indexPath) SELECTED = \(cell.cellSelected))")
+
         
+        let selected = indexPath.row == selectedSegmentioIndex
+        print("Cell at \(indexPath) was SELECTED = \(cell.cellSelected))")
         cell.configure(
-            selected: (indexPath.row == selectedSegmentioIndex),
+            selected:selected,
             selectedImage: content.selectedImage,
             image: content.image,
             isFirstCell: indexPath.row == 0,
             isLastCell: indexPath.row == segmentioItems.count - 1
         )
         
-        cell.setNeedsUpdateConstraints()
-        cell.updateConstraintsIfNeeded()
+//        print("cell at \(indexPath) is selected = \(collectionView.cellForItem(at: indexPath)?.isSelected)")
+
+        
+//        cell.setNeedsUpdateConstraints()
+//        cell.updateConstraintsIfNeeded()
+        
+//        let finalCellFrame = cell.frame
+//        let translation = collectionView.panGestureRecognizer.translation(in: collectionView.superview)
+//        if translation.x > 0 {
+//            cell.frame = CGRect(origin: finalCellFrame.origin, size: CGSize(width: segmentWidth(for: indexPath), height: collectionView.frame.height))
+//        } else {
+//            cell.frame = CGRect(x: finalCellFrame.origin.x + 1000, y: -500, width: 0, height: 0)
+//        }
+//
+//        UIView.animate(withDuration: 0.5) {
+//            cell.frame = finalCellFrame
+//        }
+        
+  
+//        collectionView.performBatchUpdates({})
+
+        
+        
+     
+        
+        print("Cell at \(indexPath) NOW SELECTED = \(cell.cellSelected))")
         
         return cell
     }
@@ -828,6 +860,14 @@ extension Segmentio: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedSegmentioIndex = indexPath.row
+//        let cell = collectionView.cellForItem(at: indexPath)
+//        UIView.transition(with: collectionView, duration: 0.5, options: .curveEaseOut, animations: {
+//            cell?.frame = CGRect(origin: cell!.frame.origin, size:  CGSize(width: self.segmentWidth(for: indexPath), height: collectionView.frame.height))
+//        }) { completed in
+//
+//        }
+        print("Item selected at \(indexPath)")
+//        print("didSelectItemAt cell at \(indexPath) is selected = \(collectionView.cellForItem(at: indexPath)?.isSelected)")
     }
     
 }

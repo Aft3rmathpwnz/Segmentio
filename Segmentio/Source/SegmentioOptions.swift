@@ -35,7 +35,6 @@ public struct SegmentioItem {
         label.font = font
         label.text = self.title
         label.sizeToFit()
-        print("intrinsicContentSize = \(label.intrinsicContentSize.width)")
         return label.intrinsicContentSize.width
     }
     public var font: UIFont?

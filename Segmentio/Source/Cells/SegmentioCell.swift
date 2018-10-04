@@ -21,7 +21,11 @@ class SegmentioCell: UICollectionViewCell {
     
     var topConstraint: NSLayoutConstraint?
     var bottomConstraint: NSLayoutConstraint?
-    var cellSelected = false
+    var cellSelected = false {
+        didSet {
+            print("cellSelected SET TO \(cellSelected)")
+        }
+    }
     
     fileprivate var options = SegmentioOptions()
     fileprivate var style = SegmentioStyle.imageOverLabel
@@ -116,7 +120,8 @@ class SegmentioCell: UICollectionViewCell {
     
     // MARK: - Configure
     
-    func configure(content: SegmentioItem, style: SegmentioStyle, options: SegmentioOptions, isLastCell: Bool) {
+    func configure(content: SegmentioItem, style: SegmentioStyle, options: SegmentioOptions, isLastCell: Bool, wasSelected: Bool) {
+        self.cellSelected = wasSelected
         self.options = options
         self.style = style
         setupContent(content: content)
@@ -339,12 +344,9 @@ class SegmentioCell: UICollectionViewCell {
             segmentTitleLabel?.text = content.title
             segmentTitleLabel?.minimumScaleFactor = 0.5
             segmentTitleLabel?.adjustsFontSizeToFitWidth = false
-            print("width = \(segmentTitleLabel?.frame)")
             segmentTitleLabel?.sizeToFit()
-            print("width = \(segmentTitleLabel?.frame)")
             self.setNeedsUpdateConstraints()
             self.updateConstraintsIfNeeded()
-            print("width = \(segmentTitleLabel?.frame)")
         }
     }
     
