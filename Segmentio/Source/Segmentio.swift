@@ -388,10 +388,30 @@ open class Segmentio: UIView {
     // MARK: Reload segmentio
     public func reloadSegmentio() {
         segmentioCollectionView?.collectionViewLayout.invalidateLayout()
+        
         segmentioCollectionView?.reloadData()
-        guard selectedSegmentioIndex != -1 else { return }
-        scrollToItemAtContext()
-        moveShapeLayerAtContext()
+
+//        segmentioCollectionView?.performBatchUpdates({
+//            segmentioCollectionView?.reloadData()
+//        }, completion: { [weak self] finished in
+//            if finished {
+//
+//            }
+//        })
+        
+//        segmentioCollectionView?.performBatchUpdates(
+//            {
+//                segmentioCollectionView?.reloadSections(IndexSet(integer: 0))
+//        }, completion: { [weak self] finished in
+//            if finished {
+//                guard self?.selectedSegmentioIndex != -1 else { return }
+//                self?.scrollToItemAtContext()
+//                self?.moveShapeLayerAtContext()
+//            }
+//        })
+
+
+      
     }
     
     // MARK: Move shape layer to item

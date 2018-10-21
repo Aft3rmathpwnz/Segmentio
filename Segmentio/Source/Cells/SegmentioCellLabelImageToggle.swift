@@ -24,16 +24,34 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
     
     override func setupConstraintsForSubviews() {
         super.setupConstraintsForSubviews()
+        self.clipsToBounds = true
+        let ctB = self.clipsToBounds
         var views: [String: UIView]
         if cellSelected {
             guard let containerView = containerView, let imageContainerView = imageContainerView else {
                 return
             }
                         
-            views = ["containerView": containerView]
+            
+            containerView.transform = CGAffineTransform(translationX: self.bounds.size.width, y: 0)
+            containerView.alpha = 0.0
+            imageContainerView.alpha = 1.0
+            imageContainerView.transform = .identity
+            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.75, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                containerView.transform = .identity
+                imageContainerView.transform = CGAffineTransform(translationX: -self.bounds.size.width, y: 0)
+            }, completion: { finished in
+                imageContainerView.transform = .identity
+            })
+            
+            UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                containerView.alpha = 1.0
+                imageContainerView.alpha = 0.0
+            }, completion: { finished in
+            })
             
             // main constraints
-            
+            views = ["containerView": containerView]
             let segmentTitleLabelHorizontConstraint = NSLayoutConstraint.constraints(
                 withVisualFormat: "|-[containerView]-|",
                 options: [.alignAllCenterX],
@@ -41,6 +59,8 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
                 views: views
             )
             NSLayoutConstraint.activate(segmentTitleLabelHorizontConstraint)
+            
+            
             
 //            self.setNeedsUpdateConstraints()
 
@@ -60,34 +80,53 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
 //            transition.subtype = kCATransitionFromRight
 //            self.layer.add(transition, forKey: kCATransition)
 //
-            containerView.isHidden = false
-            imageContainerView.isHidden = true
+//            containerView.isHidden = false
+//            imageContainerView.isHidden = true
 
             self.setNeedsUpdateConstraints()
+            
+            
             
 //            UIView.animate(withDuration: 0.25, animations: {
 //                self.layoutIfNeeded()
 //            })
+            
+            
 
-            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
-                imageContainerView.alpha = 0
-                containerView.alpha = 1
-//                self.layoutIfNeeded()
-            }, completion:  {
-                (value: Bool) in
-
-            })
+//            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
+//                imageContainerView.alpha = 0
+//                containerView.alpha = 1
+////                self.layoutIfNeeded()
+//            }, completion:  {
+//                (value: Bool) in
+//
+//            })
             
             
         } else {
             guard let containerView = containerView, let imageContainerView = imageContainerView else {
                 return
             }
+            
+            imageContainerView.transform = CGAffineTransform(translationX: -self.bounds.size.width, y: 0)
+            imageContainerView.alpha = 0.0
+            containerView.alpha = 0.0
+            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.75, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                imageContainerView.transform = .identity
+            }, completion: { finished in
+                
+            })
+            
+            UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                imageContainerView.alpha = 1.0
+                containerView.alpha = 0.0
+            }, completion: { finished in
+            })
 
-            views = ["imageContainerView": imageContainerView]
             
             // main constraints
-            
+            views = ["imageContainerView": imageContainerView]
+
             let segmentImageViewlHorizontConstraint = NSLayoutConstraint.constraints(
                 withVisualFormat: "|-[imageContainerView]-|",
                 options: [],
@@ -112,8 +151,8 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
 //            transition.subtype = kCATransitionFromLeft
 //            self.layer.add(transition, forKey: kCATransition)
 //
-            imageContainerView.isHidden = false
-            containerView.isHidden = true
+//            imageContainerView.isHidden = false
+//            containerView.isHidden = true
             
             self.setNeedsUpdateConstraints()
             
@@ -121,13 +160,15 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
 //                self.layoutIfNeeded()
 //            })
             
-            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
-                containerView.alpha = 0
-                imageContainerView.alpha = 1
-//                self.layoutIfNeeded()
-            }, completion:  {
-                (value: Bool) in
-            })
+            
+            
+//            UIView.animate(withDuration: 0.45/*Animation Duration second*/, animations: {
+//                containerView.alpha = 0
+//                imageContainerView.alpha = 1
+////                self.layoutIfNeeded()
+//            }, completion:  {
+//                (value: Bool) in
+//            })
             
         }
         
