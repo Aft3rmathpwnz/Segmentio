@@ -598,8 +598,8 @@ open class Segmentio: UIView {
                     colorAnimation.fromValue = gradientLayer.colors
                     colorAnimation.toValue = colorsForIndexes?[selectedSegmentioIndex >= 0 ? selectedSegmentioIndex : 0].map({ $0.cgColor })
                     colorAnimation.isRemovedOnCompletion = true
-                    colorAnimation.fillMode = kCAFillModeForwards
-                    colorAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+                    colorAnimation.fillMode = CAMediaTimingFillMode.forwards
+                    colorAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
                     animations.append(colorAnimation)
 
                     let group = CAAnimationGroup()

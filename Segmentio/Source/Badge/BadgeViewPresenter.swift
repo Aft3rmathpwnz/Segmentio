@@ -14,17 +14,16 @@ class BadgeViewPresenter {
                                   badgeSize: BadgeSize = .standard, relativeTo relativeView: UIView) {
         var badgeView: BadgeWithCounterView!
         for view in containerView.subviews {
-            if view is BadgeWithCounterView {
-                badgeView = view as! BadgeWithCounterView
-                badgeView?.setBadgeBackgroundColor(backgroundColor)
-                badgeView?.setBadgeCounterValue(counterValue)
+            if let badgeView = view as? BadgeWithCounterView {
+                badgeView.setBadgeBackgroundColor(backgroundColor)
+                badgeView.setBadgeCounterValue(counterValue)
             }
         }
         if badgeView == nil {
             badgeView = badgeViewForCounterValue(counterValue, backgroundColor: backgroundColor, size: badgeSize)
             badgeView.translatesAutoresizingMaskIntoConstraints = false
             containerView.addSubview(badgeView)
-            containerView.bringSubview(toFront: badgeView)
+            containerView.bringSubviewToFront(badgeView)
             setupBadgeConstraints(badgeView, counterValue: counterValue, relativeTo: relativeView)
         }
     }
@@ -33,17 +32,16 @@ class BadgeViewPresenter {
                                   badgeSize: BadgeSize = .standard, relativeTo relativeView: UIView) {
         var badgeView: BadgeWithCounterView!
         for view in containerView.subviews {
-            if view is BadgeWithCounterView {
-                badgeView = view as! BadgeWithCounterView
-                badgeView?.setBadgeBackgroundColors(backgroundColors)
-                badgeView?.setBadgeCounterValue(counterValue)
+            if let badgeView = view as? BadgeWithCounterView {
+                badgeView.setBadgeBackgroundColors(backgroundColors)
+                badgeView.setBadgeCounterValue(counterValue)
             }
         }
         if badgeView == nil {
             badgeView = badgeViewForCounterValue(counterValue, backgroundColors: backgroundColors, size: badgeSize)
             badgeView.translatesAutoresizingMaskIntoConstraints = false
             containerView.addSubview(badgeView)
-            containerView.bringSubview(toFront: badgeView)
+            containerView.bringSubviewToFront(badgeView)
             setupBadgeConstraints(badgeView, counterValue: counterValue, relativeTo: relativeView)
         }
     }
@@ -57,10 +55,6 @@ class BadgeViewPresenter {
     }
     
     fileprivate func setupBadgeConstraints(_ badgeView: BadgeWithCounterView, counterValue: Int, relativeTo relativeView: UIView) {
-        var constraintConstant:CGFloat = -5.0
-        if counterValue > 9 {
-            constraintConstant = -10.0
-        }
         let segmentTitleLabelHorizontalCenterConstraint =
             NSLayoutConstraint(
                 item: badgeView,

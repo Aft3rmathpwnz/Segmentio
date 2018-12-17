@@ -25,7 +25,6 @@ final class SegmentioCellLabelImageToggle: SegmentioCell {
     override func setupConstraintsForSubviews() {
         super.setupConstraintsForSubviews()
         self.clipsToBounds = true
-        let ctB = self.clipsToBounds
         var views: [String: UIView]
         if cellSelected {
             guard let containerView = containerView, let imageContainerView = imageContainerView else {
